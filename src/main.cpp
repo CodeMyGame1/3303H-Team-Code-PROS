@@ -1,7 +1,7 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "config.cpp"
-#include "autons/main.cpp"
+#include "autons.cpp"
 
 /**
  * A callback function for LLEMU's center button.
@@ -29,6 +29,7 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
+	// Initialize the Auton Selector (Add the Selector Soon)
 
 	pros::lcd::register_btn1_cb(on_center_button);
 }
@@ -94,12 +95,16 @@ void opcontrol() {
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-			Intake.move_velocity(200);
-			Belt.move_velocity(600);
+			//Intake.move_velocity(200);
+			moveIntake(true);
+			//Belt.move_velocity(600);
+			moveBelt(true);
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-			Intake.move_velocity(-200);
-			Belt.move_velocity(-600);
+			moveIntake(false);
+			moveBelt(false); 
+			//Intake.move_velocity(-200);
+			//Belt.move_velocity(-600);
 		}
 		else{
 			Intake.brake();
@@ -113,4 +118,20 @@ void opcontrol() {
 
 void togglePiston(){
 	Piston.toggle(); 
+}
+void moveIntake(bool val){
+	if(val == true){
+		Intake.move_velocity(200);
+	}
+	else{
+		Intake.move_velocity(-200);
+	}
+}
+void moveBelt(bool val){
+	if(val == true){
+		Belt.move_velocity(600);
+	}
+	else{
+		Belt.move_velocity(-600);
+	}
 }
